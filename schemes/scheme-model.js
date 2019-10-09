@@ -46,7 +46,22 @@ function findById() {
 // step_number: 2, instructions: '...and quest'}, etc. ].
 // This array should include the scheme_name not the scheme_id.
 
-function findSteps(id)
+function findSteps(id) {
+    return db('steps')
+    .select('scheme_name', 'step_number', 'instructions')
+    .from('steps')
+
+    .join('schemes', 'scheme_id', '=', 'steps.scheme_id')
+    .where({scheme_id : id})
+
+    .then(res => {
+        if (res) {
+            return res;
+        } else {
+             return null;
+        }
+    });
+}
 
 
 
