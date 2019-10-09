@@ -53,6 +53,7 @@ function findSteps(id) {
 
     .join('schemes', 'scheme_id', '=', 'steps.scheme_id')
     .where({scheme_id : id})
+    
 
     .then(res => {
         if (res) {
@@ -64,10 +65,61 @@ function findSteps(id) {
 }
 
 
+// add(scheme):
+// Expects a scheme object.
+// Inserts scheme into the database.
+// Resolves to the newly inserted scheme, including id.
+
+function add(scheme) {
+
+    return db('schemes').insert(scheme)
+    .then(scheme => {
+        return scheme[0];
+    })
+}
+
+
+// update(changes, id):
+// Expects a changes object and an id.
+// Updates the scheme with the given id.
+// Resolves to the newly updated scheme object.
+
+function update(changes, id) {
+    return db('scheme')
+    .where({id: id})
+    .update(changes)
+        
+
+    .then(update => {
+        return update;
+    })
+};
+
+
+// remove(id):
+// Removes the scheme object with the provided id.
+// Resolves to the removed scheme
+// Resolves to null on an invalid id.
+// (Hint: Only worry about removing the scheme. 
+// The database is configured to automatically remove all associated steps.)
+
+function remove(id){
+    return db('schemes')
+    .where({id: id})
+    .delete()
+    .then(del => {
+        return del;
+    })
+}
+
 
 
 module.exports = {
     find,
     findById,
-    findSteps
+    findSteps,
+    add,
+    update,
+    remove
+    
 }
