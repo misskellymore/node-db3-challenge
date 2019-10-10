@@ -19,7 +19,7 @@ function find() {
 // Resolve to a single scheme object.
 // On an invalid id, resolves to null.
 
-function findById() {
+function findById(id) {
     return db('schemes')
     .where({id: id})
     // .first so we dont have to use res[0]
@@ -48,11 +48,11 @@ function findById() {
 
 function findSteps(id) {
     return db('steps')
-    .select('scheme_name', 'step_number', 'instructions')
-    .from('steps')
-
     .join('schemes', 'scheme_id', '=', 'steps.scheme_id')
-    .where({scheme_id : id})
+    .select('steps.id', 'schemes.scheme_name', 'steps.step_number', 'steps.instructions')
+    
+    .where({'schemes.id' : id})
+    .orderBy('step_number', 'asc')
     
 
     .then(res => {
@@ -64,6 +64,14 @@ function findSteps(id) {
     });
 }
 
+
+function addStep(step) {
+
+    return db('steps').insert(step)
+    .then(steps => {
+        return steps[0];
+    })
+}
 
 // add(scheme):
 // Expects a scheme object.
@@ -85,7 +93,7 @@ function add(scheme) {
 // Resolves to the newly updated scheme object.
 
 function update(changes, id) {
-    return db('scheme')
+    return db('schemes')
     .where({id: id})
     .update(changes)
         
@@ -120,6 +128,7 @@ module.exports = {
     findSteps,
     add,
     update,
-    remove
+    remove,
+    addStep
     
 }
